@@ -1,31 +1,22 @@
-FROM alpine:3.18
+FROM jrottenberg/ffmpeg:4.4-ubuntu
 
-# Install required packages
-RUN apk add --no-cache ffmpeg bash supervisor nginx curl jq
+# Install nginx
+RUN apt-get update && apt-get install -y nginx
 
-# Create directory structure
-RUN mkdir -p /app/transcoder /app/hls /app/logs /app/www
+# Copy the entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
 
-# Copy files
-COPY entrypoint.sh /app/
-COPY transcoder.sh /app/
-COPY supervisord.conf /etc/supervisor/conf.d/
-COPY nginx.conf /etc/nginx/http.d/default.conf
-COPY www/* /app/www/
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Make scripts executable
-RUN chmod +x /app/entrypoint.sh /app/transcoder.sh
+# Make the entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
 
-# Expose port for web interface
-EXPOSE 8080
-
-# Set environment variables
-ENV SOURCE_URL="https://m3u8-prx.onrender.com/willow.m3u8"
-ENV CHECK_INTERVAL=10
-ENV SUPPRESS_LOGS=true
-
-# Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Entry point
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Expose port 80 for HTTP
+EXPOSE 80
+
+# Start nginx and run the entrypoint script
+CMD service nginx start && /app/entrypoint.sh
