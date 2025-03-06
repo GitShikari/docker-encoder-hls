@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Multi-Quality Stream</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.20.3/video-js.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .player-container {
+            margin: 20px 0;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+        }
+        .stats {
+            margin-top: 15px;
+        }
+        .quality-selector {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HLS Multi-Quality Stream</h1>
+        
+        <div class="player-container">
+            <video-js id="my-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="100%" height="auto">
+                <source src="/hls/master.m3u8" type="application/x-mpegURL">
+            </video-js>
+        </div>
+        
+        <div class="info">
+            <h3>Stream Information</h3>
+            <p>Original stream has been transcoded to multiple qualities:</p>
+            <ul>
+                <li>1080p (High Definition)</li>
+                <li>720p (HD)</li>
+                <li>480p (Standard Definition)</li>
+                <li>360p (Low Definition)</li>
+            </ul>
+            
+            <div class="quality-selector">
+                <p>Direct links to specific quality streams:</p>
+                <a href="/hls/1080p.m3u8" target="_blank">1080p Stream</a> |
+                <a href="/hls/720p.m3u8" target="_blank">720p Stream</a> |
+                <a href="/hls/480p.m3u8" target="_blank">480p Stream</a> |
+                <a href="/hls/360p.m3u8" target="_blank">360p Stream</a> |
+                <a href="/hls/master.m3u8" target="_blank">Adaptive Master</a>
+            </div>
+            
+            <div class="stats" id="stats-container">
+                <h3>Stream Status</h3>
+                <p>Status: <span id="status">Checking...</span></p>
+                <p>Source: <span id="source">Loading...</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.20.3/video.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize player
+            var player = videojs('my-player', {
+                autoplay: false,
+                responsive: true,
+                fluid: true,
+                html5: {
+                    hls: {
+                        enableLowInitialPlaylist: true,
+                        smoothQualityChange: true,
+                        overrideNative: true
+                    }
+                }
+            });
+            
+            // Fetch status
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status').textContent = data.status;
+                    document.getElementById('source').textContent = data.source;
+                })
+                .catch(error => {
+                    document.getElementById('status').textContent = 'Error fetching status';
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
