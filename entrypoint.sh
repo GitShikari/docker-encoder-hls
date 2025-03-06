@@ -8,7 +8,7 @@ HLS_URL="https://m3u8-prx.onrender.com/willow.m3u8"
 
 # Infinite loop to restart the stream if it fails
 while true; do
-  ffmpeg -i "$HLS_URL" \
+  ffmpeg -i "https://m3u8-prx.onrender.com/willow.m3u8" \
     -map 0:v -map 0:a \
     -c:a aac -ar 48000 -b:a 128k \
     -c:v libx264 -crf 22 -g 30 -keyint_min 120 \
