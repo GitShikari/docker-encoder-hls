@@ -9,7 +9,7 @@ services:
       - hls-data:/app/hls
       - logs-data:/app/logs
     environment:
-      - SOURCE_URL=YOUR_1080P_HLS_STREAM_URL
+      - SOURCE_URL=https://m3u8-prx.onrender.com/willow.m3u8
       - SUPPRESS_LOGS=true
       - CHECK_INTERVAL=10
     restart: always
