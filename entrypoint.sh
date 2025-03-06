@@ -1,4 +1,4 @@
-#!/bin/bash
+
 
 # Suppress ffmpeg logs
 export FFREPORT="file=/dev/null:level=error"
