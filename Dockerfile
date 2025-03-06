@@ -20,7 +20,7 @@ RUN chmod +x /app/entrypoint.sh /app/transcoder.sh
 EXPOSE 8080
 
 # Set environment variables
-ENV SOURCE_URL=""
+ENV SOURCE_URL="https://m3u8-prx.onrender.com/willow.m3u8"
 ENV CHECK_INTERVAL=10
 ENV SUPPRESS_LOGS=true
 
