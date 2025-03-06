@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  hls-transcoder:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - hls-data:/app/hls
+      - logs-data:/app/logs
+    environment:
+      - SOURCE_URL=YOUR_1080P_HLS_STREAM_URL
+      - SUPPRESS_LOGS=true
+      - CHECK_INTERVAL=10
+    restart: always
+
+volumes:
+  hls-data:
+  logs-data:
